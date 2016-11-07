@@ -1,0 +1,12 @@
+syntax: glob
+
+*/target/*
+.idea/*
+*.iml
+atlassian-ide-plugin.xml
+*.orig
+*/logs/*
+logs/*
+target/*
+*/pom.xml.releaseBackup
+pom.xml.releaseBackup
