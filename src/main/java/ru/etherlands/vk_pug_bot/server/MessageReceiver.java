@@ -2,9 +2,6 @@ package ru.etherlands.vk_pug_bot.server;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.exceptions.ApiException;
-import com.vk.api.sdk.exceptions.ClientException;
-import com.vk.api.sdk.httpclient.HttpTransportClient;
 import com.vk.api.sdk.objects.base.responses.OkResponse;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.messages.responses.GetResponse;
@@ -32,35 +29,30 @@ public class MessageReceiver {
     @Autowired
     RabbitTemplate template;
 
+    @Autowired
+    ServiceProvider provider;
+
     @Scheduled(fixedDelay=1000)
-    void initServer() {
+    void runServerInteraction() {
         try {
-
-
-            HttpTransportClient client = new HttpTransportClient();
-            VkApiClient apiClient = new VkApiClient(client);
-
-            initVkApi(apiClient, Utils.readProperties());
-
+            provider.getLock().lock();
+            receiveMessages(provider.getApiClient(), Utils.readProperties());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
+        } finally {
+            provider.getLock().unlock();
         }
     }
 
-    private void initVkApi(VkApiClient apiClient, Properties properties) {
-
+    private void receiveMessages(VkApiClient apiClient, Properties properties) {
         int userId = Integer.parseInt(properties.getProperty("userId"));
         String token = properties.getProperty("token");
-        //if (groupId == 0 || token == null) throw new RuntimeException("Params are not set");
-
         UserActor userActor = new UserActor(userId, token);
 
         try {
             logger.info("Message get");
-            System.out.println("Message get");
             GetResponse response = apiClient.messages().get(userActor).count(10).execute();
             for (Message msg: response.getItems()) {
-
                 List<Integer> readedMessageIds = new ArrayList<Integer>();
 
                 if (!msg.isReadState()) {
@@ -69,7 +61,6 @@ public class MessageReceiver {
                     logger.info("Message: " + pugMessage);
 
                     template.setExchange(Constants.INCOMING_EXCHANGE);
-
                     template.convertAndSend(pugMessage);
 
                 }
@@ -78,12 +69,8 @@ public class MessageReceiver {
                     logger.info("set readed result: " + okay.getValue());
                 }
             }
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
-
     }
-
 }
