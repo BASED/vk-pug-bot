@@ -7,4 +7,6 @@ public class Constants {
     public static final String INCOMING_EXCHANGE = "incomingExchange";
     public static final String INCOMING_HELLO_QUEUE = "incomingHelloQueue";
     public static final String INCOMING_CATS_QUEUE = "incomingCatsQueue";
+
+    public static final String PROPERTIES_FILE = "config.properties";
 }

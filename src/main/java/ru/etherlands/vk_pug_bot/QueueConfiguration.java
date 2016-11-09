@@ -10,8 +10,10 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.boot.SpringApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableRabbit
+@EnableScheduling
 @SpringBootApplication
 public class QueueConfiguration {
     Logger logger = Logger.getLogger(QueueConfiguration.class);
