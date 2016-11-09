@@ -17,7 +17,6 @@ public class ServiceProvider {
     private VkApiClient apiClient = new VkApiClient(client);
 
 
-
     public ReentrantLock getLock() {
         return lock;
     }

@@ -49,8 +49,18 @@ public class QueueConfiguration {
     }
 
     @Bean
+    public Queue outcomingQueue() {
+        return new Queue(Constants.OUTCOMING_QUEUE);
+    }
+
+    @Bean
     public FanoutExchange incomingExchange(){
         return new FanoutExchange(Constants.INCOMING_EXCHANGE);
+    }
+
+    @Bean
+    public FanoutExchange outcomingExchange(){
+        return new FanoutExchange(Constants.OUTCOMING_EXCHANGE);
     }
 
     @Bean
@@ -61,6 +71,11 @@ public class QueueConfiguration {
     @Bean
     public Binding bindingCats(){
         return BindingBuilder.bind(incomingCatsQueue()).to(incomingExchange());
+    }
+
+    @Bean
+    public Binding bindingOutcoming() {
+        return BindingBuilder.bind(outcomingQueue()).to(outcomingExchange());
     }
 
     public static void main(String[] args) throws InterruptedException {
