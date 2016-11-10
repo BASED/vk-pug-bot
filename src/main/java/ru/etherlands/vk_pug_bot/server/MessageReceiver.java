@@ -37,20 +37,16 @@ public class MessageReceiver {
     @Scheduled(fixedDelay=1000)
     void runServerInteraction() {
         try {
-            provider.getLock().lock();
-            receiveMessages(provider.getApiClient(), Utils.readProperties());
+            provider.doLock();
+            receiveMessages(provider.getApiClient(), provider.getUserActor());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         } finally {
-            provider.getLock().unlock();
+            provider.doUnLock();
         }
     }
 
-    private void receiveMessages(VkApiClient apiClient, Properties properties) {
-        int userId = Integer.parseInt(properties.getProperty("userId"));
-        String token = properties.getProperty("token");
-        UserActor userActor = new UserActor(userId, token);
-
+    private void receiveMessages(VkApiClient apiClient, UserActor userActor) {
         try {
             logger.info("Message get");
             GetResponse response = apiClient.messages().get(userActor).count(10).execute();

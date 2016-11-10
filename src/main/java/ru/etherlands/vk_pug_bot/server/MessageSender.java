@@ -36,20 +36,16 @@ public class MessageSender {
     @RabbitListener(queues = Constants.OUTGOING_QUEUE)
     void runServerInteraction(Message message) {
         try {
-            provider.getLock().lock();
-            sendMessage(message, provider.getApiClient(), Utils.readProperties());
+            provider.doLock();
+            sendMessage(message, provider.getApiClient(), provider.getUserActor());
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
         } finally {
-            provider.getLock().unlock();
+            provider.doUnLock();
         }
     }
 
-    private void sendMessage(Message message, VkApiClient apiClient, Properties properties) {
-        int userId = Integer.parseInt(properties.getProperty("userId"));
-        String token = properties.getProperty("token");
-        UserActor userActor = new UserActor(userId, token);
-
+    private void sendMessage(Message message, VkApiClient apiClient, UserActor userActor) {
         try {
             PugMessage pugMessage = (PugMessage) template.getMessageConverter().fromMessage(message);
             logger.info("Message send: " + pugMessage);

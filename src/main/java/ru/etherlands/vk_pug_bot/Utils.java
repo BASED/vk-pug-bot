@@ -10,18 +10,19 @@ import java.util.Properties;
  * Created by ssosedkin on 09.11.2016.
  */
 public class Utils {
-    public static Properties readProperties() throws FileNotFoundException {
+    public static Properties readProperties() {
         InputStream inputStream = CmdLineInit.class.getClassLoader().getResourceAsStream(Constants.PROPERTIES_FILE);
-        if (inputStream == null)
-            throw new FileNotFoundException("property file '" + Constants.PROPERTIES_FILE + "' not found in the classpath");
-
         try {
+            if (inputStream == null) {
+                throw new FileNotFoundException("property file '" + Constants.PROPERTIES_FILE + "' not found in the classpath");
+            }
             Properties properties = new Properties();
             properties.load(inputStream);
             return properties;
         } catch (IOException e) {
-            throw new RuntimeException("Incorrect properties file");
+            System.out.println("Incorrect properties file: " + e.getMessage());
         }
+        return null;
     }
 
     public static PugMessage getPugMessageFromMessage(Message message) {
