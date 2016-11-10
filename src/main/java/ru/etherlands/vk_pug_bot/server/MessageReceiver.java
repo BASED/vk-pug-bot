@@ -8,6 +8,7 @@ import com.vk.api.sdk.objects.messages.responses.GetResponse;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.etherlands.vk_pug_bot.Constants;
@@ -27,6 +28,7 @@ public class MessageReceiver {
     Logger logger = Logger.getLogger(QueueConfiguration.class);
 
     @Autowired
+    @Qualifier("incomingTemplate")
     RabbitTemplate template;
 
     @Autowired
@@ -60,7 +62,6 @@ public class MessageReceiver {
                     PugMessage pugMessage = Utils.getPugMessageFromMessage(msg);
                     logger.info("Message: " + pugMessage);
 
-                    template.setExchange(Constants.INCOMING_EXCHANGE);
                     template.convertAndSend(pugMessage);
 
                 }

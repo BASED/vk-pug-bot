@@ -31,26 +31,33 @@ public class QueueConfiguration {
         return rabbitAdmin;
     }
 
-    @Bean
-    public RabbitTemplate rabbitTemplate() {
+    @Bean("incomingTemplate")
+    public RabbitTemplate incomingTemplate() {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+        rabbitTemplate.setExchange(Constants.INCOMING_EXCHANGE);
         return rabbitTemplate;
     }
 
-
-    @Bean
-    public Queue incomingHelloQueue() {
-        return new Queue(Constants.INCOMING_HELLO_QUEUE);
+    @Bean("outgoingTemplate")
+    public RabbitTemplate outgoingTemplate() {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
+        rabbitTemplate.setExchange(Constants.OUTGOING_EXCHANGE);
+        return rabbitTemplate;
     }
 
     @Bean
-    public Queue incomingCatsQueue() {
-        return new Queue(Constants.INCOMING_CATS_QUEUE);
+    public Queue incomingCommandsQueue() {
+        return new Queue(Constants.INCOMING_COMMANDS_QUEUE);
     }
 
     @Bean
-    public Queue outcomingQueue() {
-        return new Queue(Constants.OUTCOMING_QUEUE);
+    public Queue incomingReactQueue() {
+        return new Queue(Constants.INCOMING_REACT_QUEUE);
+    }
+
+    @Bean
+    public Queue outgoingQueue() {
+        return new Queue(Constants.OUTGOING_QUEUE);
     }
 
     @Bean
@@ -59,23 +66,21 @@ public class QueueConfiguration {
     }
 
     @Bean
-    public FanoutExchange outcomingExchange(){
-        return new FanoutExchange(Constants.OUTCOMING_EXCHANGE);
+    public FanoutExchange outgoingExchange(){
+        return new FanoutExchange(Constants.OUTGOING_EXCHANGE);
     }
 
     @Bean
-    public Binding bindingHello(){
-        return BindingBuilder.bind(incomingHelloQueue()).to(incomingExchange());
+    public Binding bindingCommands(){ return BindingBuilder.bind(incomingCommandsQueue()).to(incomingExchange()); }
+
+    @Bean
+    public Binding bindingReact(){
+        return BindingBuilder.bind(incomingReactQueue()).to(incomingExchange());
     }
 
     @Bean
-    public Binding bindingCats(){
-        return BindingBuilder.bind(incomingCatsQueue()).to(incomingExchange());
-    }
-
-    @Bean
-    public Binding bindingOutcoming() {
-        return BindingBuilder.bind(outcomingQueue()).to(outcomingExchange());
+    public Binding bindingOutgoing() {
+        return BindingBuilder.bind(outgoingQueue()).to(outgoingExchange());
     }
 
     public static void main(String[] args) throws InterruptedException {

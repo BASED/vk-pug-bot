@@ -5,11 +5,11 @@ package ru.etherlands.vk_pug_bot;
  */
 public class Constants {
     public static final String INCOMING_EXCHANGE = "incomingExchange";
-    public static final String INCOMING_HELLO_QUEUE = "incomingHelloQueue";
-    public static final String INCOMING_CATS_QUEUE = "incomingCatsQueue";
+    public static final String INCOMING_COMMANDS_QUEUE = "incomingCommandsQueue";
+    public static final String INCOMING_REACT_QUEUE = "incomingReactQueue";
 
-    public static final String OUTCOMING_QUEUE = "outcomingQueue";
-    public static final String OUTCOMING_EXCHANGE = "outcomingExchange";
+    public static final String OUTGOING_QUEUE = "outgoingQueue";
+    public static final String OUTGOING_EXCHANGE = "outgoingExchange";
 
     public static final String PROPERTIES_FILE = "config.properties";
 }

@@ -2,23 +2,19 @@ package ru.etherlands.vk_pug_bot.server;
 
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
-import com.vk.api.sdk.objects.base.responses.OkResponse;
-import com.vk.api.sdk.objects.messages.responses.GetResponse;
 import com.vk.api.sdk.queries.messages.MessagesSendQuery;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.etherlands.vk_pug_bot.Constants;
 import ru.etherlands.vk_pug_bot.QueueConfiguration;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -31,12 +27,13 @@ public class MessageSender {
     private final Random random = new Random();
 
     @Autowired
+    @Qualifier("outgoingTemplate")
     RabbitTemplate template;
 
     @Autowired
     ServiceProvider provider;
 
-    @RabbitListener(queues = Constants.OUTCOMING_QUEUE)
+    @RabbitListener(queues = Constants.OUTGOING_QUEUE)
     void runServerInteraction(Message message) {
         try {
             provider.getLock().lock();

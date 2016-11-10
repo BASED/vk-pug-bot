@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -35,6 +36,7 @@ public class CmdLineInit implements CommandLineRunner {
 
 
     @Autowired
+    @Qualifier("incomingTemplate")
     RabbitTemplate template;
 
     Logger logger = Logger.getLogger(QueueConfiguration.class);
