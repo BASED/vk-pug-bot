@@ -19,7 +19,11 @@ public class KittenCommand  extends AbstractCommand{
     @Override
     public List<PugMessage> executeCommand(PugMessage message) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
-        messages.add(new PugMessage("здесь будет котик!"));
+        PugMessage outcoming = new PugMessage("здесь будет котик!");
+        outcoming.getImageFileNames().add("G:/Kitten.png");
+        outcoming.getImageFileNames().add("G:/681791902.jpg");
+
+        messages.add(outcoming);
         return messages;
     };
 }

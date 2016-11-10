@@ -1,7 +1,13 @@
 package ru.etherlands.vk_pug_bot.server;
 
+import com.vk.api.sdk.client.ApiRequest;
 import com.vk.api.sdk.client.VkApiClient;
 import com.vk.api.sdk.client.actors.UserActor;
+import com.vk.api.sdk.exceptions.ApiException;
+import com.vk.api.sdk.exceptions.ClientException;
+import com.vk.api.sdk.objects.photos.Photo;
+import com.vk.api.sdk.objects.photos.PhotoUpload;
+import com.vk.api.sdk.objects.photos.responses.MessageUploadResponse;
 import com.vk.api.sdk.queries.messages.MessagesSendQuery;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.core.Message;
@@ -15,6 +21,9 @@ import ru.etherlands.vk_pug_bot.QueueConfiguration;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
@@ -55,11 +64,54 @@ public class MessageSender {
             } else {
                 messageQuery = messageQuery.chatId(pugMessage.getChatId());
             }
+
+            addPhotosToMessagesQuery(apiClient, userActor, messageQuery, pugMessage);
             String result = messageQuery.randomId(random.nextInt()).executeAsString();
             logger.info("send result: " + result);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
+    }
+
+    private MessagesSendQuery addPhotosToMessagesQuery(VkApiClient apiClient, UserActor userActor, MessagesSendQuery messagesSendQuery, PugMessage message) throws ClientException, ApiException {
+        if (message.getImageFileNames() == null || message.getImageFileNames().isEmpty()) {
+            return messagesSendQuery;
+        }
+        List<Photo> allPhotos = new ArrayList<>();
+        for (String imageFileName : message.getImageFileNames()) {
+            List<Photo> photos = getPhotosForImageFileName(apiClient, userActor, imageFileName);
+            for (Photo vkPhoto : photos) {
+                logger.info("Photo: " + vkPhoto.toString());
+            }
+            allPhotos.addAll(photos);
+        }
+        if (allPhotos.isEmpty()) {
+            return messagesSendQuery;
+        }
+        return messagesSendQuery.attachment(getAttachmentsForPhotos(allPhotos));
+    }
+
+    private List<Photo> getPhotosForImageFileName(VkApiClient apiClient, UserActor userActor, String imageFileName) throws ApiException, ClientException {
+        PhotoUpload upload = apiClient.photos().getMessagesUploadServer(userActor).execute();
+        String uploadUrl = upload.getUploadUrl();
+        Integer albumId = upload.getAlbumId();
+        Integer userId = upload.getUserId();
+
+        MessageUploadResponse response = apiClient.upload().photoMessage(uploadUrl, new File(imageFileName)).execute();
+        String photo = response.getPhoto();
+        String hash = response.getHash();
+        Integer server = response.getServer();
+
+        return apiClient.photos().saveMessagesPhoto(userActor, photo).hash(hash).server(server).execute();
+    }
+
+    private List<String> getAttachmentsForPhotos(List<Photo> photos) {
+        List<String> attachmentStrings = new ArrayList<>();
+        for (Photo photo: photos) {
+            String attachment = "photo" + photo.getOwnerId() + "_" + photo.getId();
+            attachmentStrings.add(attachment);
+        }
+        return attachmentStrings;
     }
 }

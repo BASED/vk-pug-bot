@@ -1,6 +1,8 @@
 package ru.etherlands.vk_pug_bot.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ssosedkin on 09.11.2016.
@@ -14,6 +16,7 @@ public class PugMessage implements Serializable{
     private String body;
     private Integer chatId;
     private Integer adminId;
+    private List<String> imageFileNames = new ArrayList<>();
 
     public PugMessage(Integer id, Integer date, Integer userId, Integer randomId, String title, String body, Integer chatId, Integer adminId) {
         this.id = id;
@@ -110,9 +113,16 @@ public class PugMessage implements Serializable{
         sb.append(", body=\'").append(this.body).append("\'");
         sb.append(", chatId=").append(this.chatId);
         sb.append(", adminId=").append(this.adminId);
-
+        sb.append(", imageFileNames=").append(this.imageFileNames);
         sb.append('}');
         return sb.toString();
     }
 
+    public List<String> getImageFileNames() {
+        return imageFileNames;
+    }
+
+    public void setImageFileNames(List<String> imageFileNames) {
+        this.imageFileNames = imageFileNames;
+    }
 }
