@@ -2,6 +2,7 @@ package ru.etherlands.vk_pug_bot.commands;
 
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +17,9 @@ public class KittenCommand  extends AbstractCommand{
     }
 
     @Override
-    public PugMessage executeCommand(PugMessage message) {
-        return new PugMessage("здесь будет котик!");
+    public List<PugMessage> executeCommand(PugMessage message) {
+        List<PugMessage> messages = new ArrayList<PugMessage>();
+        messages.add(new PugMessage("здесь будет котик!"));
+        return messages;
     };
 }

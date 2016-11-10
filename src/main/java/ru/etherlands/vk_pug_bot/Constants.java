@@ -12,4 +12,6 @@ public class Constants {
     public static final String OUTGOING_EXCHANGE = "outgoingExchange";
 
     public static final String PROPERTIES_FILE = "config.properties";
+
+    public static final String COMMAND_PREFIX = "!";
 }
