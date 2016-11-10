@@ -26,6 +26,16 @@ public class PugMessage implements Serializable{
         this.adminId = adminId;
     }
 
+    public PugMessage(Integer userId, String body, Integer chatId) {
+        this.userId = userId;
+        this.body = body;
+        this.chatId = chatId;
+    }
+
+    public PugMessage(String body) {
+        this.body = body;
+    }
+
     public Integer getId() {
         return id;
     }
