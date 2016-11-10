@@ -20,6 +20,7 @@ public class ServiceProvider {
     private VkApiClient apiClient = new VkApiClient(client);
     private Properties properties = Utils.readProperties();
     private int userId = Integer.parseInt(properties.getProperty("userId"));
+    private int lockDelay = Integer.parseInt(properties.getProperty("lockDelay"));
     private String token = properties.getProperty("token");
     private UserActor userActor = new UserActor(userId, token);
 
@@ -28,7 +29,11 @@ public class ServiceProvider {
     }
 
     public void doUnLock() {
+        try {
+            Thread.sleep(lockDelay);
+        } catch (InterruptedException e) {
 
+        }
         lock.unlock();
     }
 
