@@ -5,6 +5,7 @@ import com.vk.api.sdk.client.actors.UserActor;
 import com.vk.api.sdk.objects.base.responses.OkResponse;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.messages.responses.GetResponse;
+import com.vk.api.sdk.queries.messages.MessagesGetQuery;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,9 @@ import java.util.Properties;
  */
 @Component
 public class MessageReceiver {
-    Logger logger = Logger.getLogger(QueueConfiguration.class);
+    private Logger logger = Logger.getLogger(QueueConfiguration.class);
+    private Integer lastMessageId = 0;
+    private Integer maxMessages = Integer.parseInt(Utils.readProperties().getProperty("maxMessages"));
 
     @Autowired
     @Qualifier("incomingTemplate")
@@ -34,7 +37,7 @@ public class MessageReceiver {
     @Autowired
     ServiceProvider provider;
 
-    @Scheduled(fixedDelay=1000)
+    @Scheduled(fixedDelay=900)
     void runServerInteraction() {
         try {
             provider.doLock();
@@ -48,10 +51,16 @@ public class MessageReceiver {
 
     private void receiveMessages(VkApiClient apiClient, UserActor userActor) {
         try {
-            logger.info("Message get");
-            GetResponse response = apiClient.messages().get(userActor).count(10).execute();
+            MessagesGetQuery query = apiClient.messages().get(userActor).count(maxMessages);
+            if (lastMessageId > 0) {
+                query = query.lastMessageId(lastMessageId);
+            }
+
+            GetResponse response = query.execute();
             for (Message msg: response.getItems()) {
                 List<Integer> readedMessageIds = new ArrayList<Integer>();
+                if (msg.getId() > lastMessageId)
+                    lastMessageId = msg.getId();
 
                 if (!msg.isReadState()) {
                     readedMessageIds.add(msg.getId());
