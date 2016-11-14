@@ -1,9 +1,11 @@
 package ru.etherlands.vk_pug_bot;
 
 import com.vk.api.sdk.objects.messages.Message;
+import org.apache.commons.io.FileUtils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -62,5 +64,13 @@ public class Utils {
                 // ignore close exception
             }
         }
+    }
+
+    public static String saveURLToFile(String urlPath) throws IOException {
+        URL url = new URL(urlPath);
+        String[] urlParts = urlPath.split("/");
+        File file = new File(urlParts[urlParts.length - 1]);
+        FileUtils.copyURLToFile(url, file);
+        return file.getAbsolutePath();
     }
 }
