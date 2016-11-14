@@ -37,6 +37,7 @@ public class CommandsProcessor {
     public static List<AbstractCommand> getCommands() {
         List<AbstractCommand> commands = new ArrayList<>();
         commands.add(new KittenCommand());
+        commands.add(new DogCommand());
         return commands;
     };
 
