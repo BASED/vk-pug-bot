@@ -24,7 +24,7 @@ public class KittenCommand  extends AbstractCommand{
 
     @Override
     public String getDescription() {
-        return "Случайный котэ с random.cat";
+        return "Случайный котэ с http://random.cat";
     }
 
     @Override

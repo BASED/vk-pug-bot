@@ -24,7 +24,7 @@ public class DogCommand extends AbstractCommand{
 
     @Override
     public String getDescription() {
-        return "Случайный собакен с random.dog";
+        return "Случайный собакен с http://random.dog";
     }
 
     @Override

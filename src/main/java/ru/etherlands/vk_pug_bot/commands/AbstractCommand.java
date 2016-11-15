@@ -10,5 +10,5 @@ import java.util.List;
 public abstract class AbstractCommand {
     public abstract List<String> getCommandWords();
     public abstract List<PugMessage> executeCommand(PugMessage message);
-
+    public abstract String getDescription();
 }

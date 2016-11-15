@@ -34,7 +34,7 @@ public class OrCommand extends AbstractCommand {
 
     @Override
     public String getDescription() {
-        return "Выбор из предложенныйх вариантов";
+        return "Выбор из предложенных вариантов. Например: !выбери рыба колбаса";
     }
 
     @Override
