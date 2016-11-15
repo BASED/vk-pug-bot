@@ -38,6 +38,7 @@ public class CommandsProcessor {
         List<AbstractCommand> commands = new ArrayList<>();
         commands.add(new KittenCommand());
         commands.add(new DogCommand());
+        commands.add(new WeatherCommand());
         return commands;
     };
 

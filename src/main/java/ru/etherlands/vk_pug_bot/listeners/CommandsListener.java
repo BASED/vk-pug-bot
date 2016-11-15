@@ -37,25 +37,29 @@ public class CommandsListener {
 
     @RabbitListener(queues = Constants.INCOMING_COMMANDS_QUEUE)
     public void processMessage(Message message) {
-        logger.info("accepted on worker 1 : " + message);
-        PugMessage incomingMessage = (PugMessage) incomingTemplate.getMessageConverter().fromMessage(message);
-        logger.info("Received object: " + incomingMessage);
-        if (incomingMessage.getBody() == null || incomingMessage.getBody().isEmpty()) {
-            return;
-        }
-
-        List<PugMessage> outgoingMessages = CommandsProcessor.getCommandExecution(incomingMessage);
-
-        if (outgoingMessages != null) {
-            for (PugMessage outgoingMessage : outgoingMessages) {
-                //if not specified by command processor,  send to source
-                if (outgoingMessage.getUserId() == null && outgoingMessage.getChatId() == null) {
-                    outgoingMessage.setUserId(incomingMessage.getUserId());
-                    outgoingMessage.setChatId(incomingMessage.getChatId());
-                }
-
-                outgoingTemplate.convertAndSend(outgoingMessage);
+        try {
+            logger.info("accepted on worker 1 : " + message);
+            PugMessage incomingMessage = (PugMessage) incomingTemplate.getMessageConverter().fromMessage(message);
+            logger.info("Received object: " + incomingMessage);
+            if (incomingMessage.getBody() == null || incomingMessage.getBody().isEmpty()) {
+                return;
             }
+
+            List<PugMessage> outgoingMessages = CommandsProcessor.getCommandExecution(incomingMessage);
+
+            if (outgoingMessages != null) {
+                for (PugMessage outgoingMessage : outgoingMessages) {
+                    //if not specified by command processor,  send to source
+                    if (outgoingMessage.getUserId() == null && outgoingMessage.getChatId() == null) {
+                        outgoingMessage.setUserId(incomingMessage.getUserId());
+                        outgoingMessage.setChatId(incomingMessage.getChatId());
+                    }
+
+                    outgoingTemplate.convertAndSend(outgoingMessage);
+                }
+            }
+        } catch (Exception ex) {
+            logger.error(ex.getMessage(), ex);
         }
     }
 
