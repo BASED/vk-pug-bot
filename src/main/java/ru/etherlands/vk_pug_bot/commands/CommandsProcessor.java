@@ -39,6 +39,7 @@ public class CommandsProcessor {
         commands.add(new KittenCommand());
         commands.add(new DogCommand());
         commands.add(new WeatherCommand());
+        commands.add(new OrCommand());
         return commands;
     };
 
