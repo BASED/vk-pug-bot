@@ -23,6 +23,11 @@ public class DogCommand extends AbstractCommand{
     }
 
     @Override
+    public String getDescription() {
+        return "Случайный собакен с random.dog";
+    }
+
+    @Override
     public List<PugMessage> executeCommand(PugMessage message) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);

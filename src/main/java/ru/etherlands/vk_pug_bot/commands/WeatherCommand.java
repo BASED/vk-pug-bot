@@ -24,6 +24,11 @@ public class WeatherCommand extends AbstractCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Погода";
+    }
+
+    @Override
     public List<PugMessage> executeCommand(PugMessage message) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outcoming = new PugMessage(null);

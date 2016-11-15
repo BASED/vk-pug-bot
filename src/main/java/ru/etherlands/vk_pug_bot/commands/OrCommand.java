@@ -33,6 +33,11 @@ public class OrCommand extends AbstractCommand {
     }
 
     @Override
+    public String getDescription() {
+        return "Выбор из предложенныйх вариантов";
+    }
+
+    @Override
     public List<PugMessage> executeCommand(PugMessage incoming) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);
@@ -65,7 +70,7 @@ public class OrCommand extends AbstractCommand {
 
         logger.info("Or variants: " + filteredVariants);
         if (!filteredVariants.isEmpty()) {
-            answer = filteredVariants.get(random.nextInt(filteredVariants.size()));
+            answer = filteredVariants.get(random.nextInt(100) % filteredVariants.size());
         }
 
         if (random.nextInt(100) < chanceOfSpecialAnswer) {

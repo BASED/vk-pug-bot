@@ -23,6 +23,11 @@ public class KittenCommand  extends AbstractCommand{
     }
 
     @Override
+    public String getDescription() {
+        return "Случайный котэ с random.cat";
+    }
+
+    @Override
     public List<PugMessage> executeCommand(PugMessage message) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outcoming = new PugMessage(null);
