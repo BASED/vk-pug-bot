@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Node;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class OrCommand extends AbstractCommand {
     }
 
     @Override
-    public List<PugMessage> executeCommand(PugMessage incoming) {
+    public List<PugMessage> executeCommand(PugMessage incoming, ServiceProvider serviceProvider) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);
         processMessage(outgoing, incoming);

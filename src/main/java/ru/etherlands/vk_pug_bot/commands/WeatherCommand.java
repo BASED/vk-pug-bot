@@ -8,6 +8,7 @@ import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Node;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.*;
 
@@ -16,7 +17,12 @@ import java.util.*;
  */
 public class WeatherCommand extends AbstractCommand {
     private Logger logger = Logger.getLogger(WeatherCommand.class);
-    private final String DOMAIN_NAME = "http://meteoinfo.ru/rss/forecasts/28722";
+
+    private final String DOMAIN_NAME = "http://meteoinfo.ru/rss/forecasts/";
+    private final String DEFAULT_CITY_ID = "28722";
+    private final HashMap<String, String> cityIds = new HashMap<String, String>() {{
+        put("Санкт-Петербург", "26063");
+    }};
 
     @Override
     public List<String> getCommandWords() {
@@ -29,21 +35,31 @@ public class WeatherCommand extends AbstractCommand {
     }
 
     @Override
-    public List<PugMessage> executeCommand(PugMessage message) {
+    public List<PugMessage> executeCommand(PugMessage message, ServiceProvider serviceProvider) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outcoming = new PugMessage(null);
-        processMessage(outcoming);
+        processMessage(outcoming, serviceProvider);
 
         messages.add(outcoming);
         return messages;
     }
 
-    public void processMessage(PugMessage message) {
+    public void processMessage(PugMessage message, ServiceProvider serviceProvider) {
         List<String> weatherData = null;
         try {
             DOMParser parser = new DOMParser();
            // parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "utf-8");
-            parser.parse(DOMAIN_NAME);
+            String cityId = DEFAULT_CITY_ID;
+            try {
+                String senderCityName = serviceProvider.getApiClient().users().get().userIds(String.valueOf(message.getUserId())).execute().get(0).getCity().getTitle();
+                logger.info("Sender city name: " + senderCityName);
+                if (cityIds.containsKey(senderCityName)) {
+                    cityId = cityIds.get(senderCityName);
+                }
+            } catch (Exception ex) {
+                logger.error(ex.getMessage(), ex);
+            }
+            parser.parse(DOMAIN_NAME + cityId);
             weatherData = getWeatherData(parser.getDocument(), parser.getDocument(), DOMAIN_NAME);
             weatherData = filterWeatherData(weatherData);
         } catch (Exception ex) {

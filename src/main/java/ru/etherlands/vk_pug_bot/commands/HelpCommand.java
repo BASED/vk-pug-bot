@@ -3,6 +3,7 @@ package ru.etherlands.vk_pug_bot.commands;
 import com.google.common.base.Strings;
 import org.apache.log4j.Logger;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +27,7 @@ public class HelpCommand extends AbstractCommand {
     }
 
     @Override
-    public List<PugMessage> executeCommand(PugMessage incoming) {
+    public List<PugMessage> executeCommand(PugMessage incoming, ServiceProvider serviceProvider) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);
         processMessage(outgoing);

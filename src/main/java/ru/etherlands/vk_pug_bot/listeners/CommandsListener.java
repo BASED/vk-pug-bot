@@ -17,6 +17,7 @@ import ru.etherlands.vk_pug_bot.commands.AbstractCommand;
 import ru.etherlands.vk_pug_bot.commands.CommandsProcessor;
 import ru.etherlands.vk_pug_bot.commands.KittenCommand;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class CommandsListener {
     @Qualifier("outgoingTemplate")
     RabbitTemplate outgoingTemplate;
 
+    @Autowired
+    ServiceProvider serviceProvider;
+
     @RabbitListener(queues = Constants.INCOMING_COMMANDS_QUEUE)
     public void processMessage(Message message) {
         try {
@@ -45,7 +49,7 @@ public class CommandsListener {
                 return;
             }
 
-            List<PugMessage> outgoingMessages = CommandsProcessor.getCommandExecution(incomingMessage);
+            List<PugMessage> outgoingMessages = CommandsProcessor.getCommandExecution(incomingMessage, serviceProvider);
 
             if (outgoingMessages != null) {
                 for (PugMessage outgoingMessage : outgoingMessages) {

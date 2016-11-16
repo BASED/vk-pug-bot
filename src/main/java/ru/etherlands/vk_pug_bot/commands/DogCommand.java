@@ -5,6 +5,7 @@ import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Node;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class DogCommand extends AbstractCommand{
     }
 
     @Override
-    public List<PugMessage> executeCommand(PugMessage message) {
+    public List<PugMessage> executeCommand(PugMessage message, ServiceProvider serviceProvider) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);
         processMessage(outgoing);

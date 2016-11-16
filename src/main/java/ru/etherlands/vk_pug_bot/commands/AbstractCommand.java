@@ -1,6 +1,7 @@
 package ru.etherlands.vk_pug_bot.commands;
 
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.List;
 
@@ -9,6 +10,6 @@ import java.util.List;
  */
 public abstract class AbstractCommand {
     public abstract List<String> getCommandWords();
-    public abstract List<PugMessage> executeCommand(PugMessage message);
+    public abstract List<PugMessage> executeCommand(PugMessage message, ServiceProvider serviceProvider);
     public abstract String getDescription();
 }

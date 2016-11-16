@@ -5,6 +5,7 @@ import ru.etherlands.vk_pug_bot.Constants;
 import ru.etherlands.vk_pug_bot.commands.AbstractCommand;
 import ru.etherlands.vk_pug_bot.commands.KittenCommand;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
+import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 public class CommandsProcessor {
     private static Logger logger = Logger.getLogger(CommandsProcessor.class);
 
-    public static List<PugMessage> getCommandExecution (PugMessage incomingMessage) {
+    public static List<PugMessage> getCommandExecution (PugMessage incomingMessage, ServiceProvider serviceProvider) {
         List<AbstractCommand> commands = getCommands();
         List<PugMessage> outgoingMessages = null;
         String messageBody = incomingMessage.getBody();
@@ -26,7 +27,7 @@ public class CommandsProcessor {
             for(AbstractCommand command : commands) {
                 if (command.getCommandWords().contains(commandWord)) {
                     logger.info("Found command processor: " + command.getClass().getSimpleName());
-                    outgoingMessages = command.executeCommand(incomingMessage);
+                    outgoingMessages = command.executeCommand(incomingMessage, serviceProvider);
                     break;
                 }
             }
