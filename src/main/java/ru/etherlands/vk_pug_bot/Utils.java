@@ -69,8 +69,20 @@ public class Utils {
     public static String saveURLToFile(String urlPath) throws IOException {
         URL url = new URL(urlPath);
         String[] urlParts = urlPath.split("/");
-        File file = new File(urlParts[urlParts.length - 1]);
+        String fileName = makeValidFileName(urlParts[urlParts.length - 1], null);
+        if (!fileName.contains(".")) {
+            fileName = fileName + ".jpg";
+        }
+        File file = new File("temp/" + fileName);
         FileUtils.copyURLToFile(url, file);
         return file.getAbsolutePath();
     }
+
+    public static String makeValidFileName(String name, Character replaceChar) {
+        if (replaceChar == null) {
+            replaceChar = '_';
+        }
+        return name.replaceAll("[\\\\/:*?\"<>=|\\x00-\\x1F]", replaceChar.toString());
+    }
+
 }

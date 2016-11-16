@@ -43,6 +43,7 @@ public class CommandsProcessor {
         commands.add(new DogCommand());
         commands.add(new WeatherCommand());
         commands.add(new OrCommand());
+        commands.add(new TitsCommand());
         return commands;
     };
 
