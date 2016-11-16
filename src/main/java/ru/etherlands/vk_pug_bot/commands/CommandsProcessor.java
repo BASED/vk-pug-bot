@@ -1,6 +1,7 @@
 package ru.etherlands.vk_pug_bot.commands;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
 import ru.etherlands.vk_pug_bot.Constants;
 import ru.etherlands.vk_pug_bot.commands.AbstractCommand;
 import ru.etherlands.vk_pug_bot.commands.KittenCommand;
@@ -14,7 +15,7 @@ import java.util.List;
  * Created by ssosedkin on 10.11.2016.
  */
 public class CommandsProcessor {
-    private static Logger logger = Logger.getLogger(CommandsProcessor.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(CommandsProcessor.class);
 
     public static List<PugMessage> getCommandExecution (PugMessage incomingMessage, ServiceProvider serviceProvider) {
         List<AbstractCommand> commands = getCommands();

@@ -4,8 +4,9 @@ package ru.etherlands.vk_pug_bot.listeners;
  * Created by ssosedkin on 07.11.2016.
  */
 
-import org.apache.log4j.Logger;
+
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,7 +26,7 @@ import java.util.Random;
 
 @Component
 public class CommandsListener {
-    Logger logger = Logger.getLogger(CommandsListener.class);
+    Logger logger = org.slf4j.LoggerFactory.getLogger((CommandsListener.class));
     Random random = new Random();
 
     @Autowired

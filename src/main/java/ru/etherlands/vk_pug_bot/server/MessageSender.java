@@ -9,7 +9,8 @@ import com.vk.api.sdk.objects.photos.Photo;
 import com.vk.api.sdk.objects.photos.PhotoUpload;
 import com.vk.api.sdk.objects.photos.responses.MessageUploadResponse;
 import com.vk.api.sdk.queries.messages.MessagesSendQuery;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -32,7 +33,7 @@ import java.util.Random;
  */
 @Component
 public class MessageSender {
-    Logger logger = Logger.getLogger(QueueConfiguration.class);
+    Logger logger = org.slf4j.LoggerFactory.getLogger(QueueConfiguration.class);
     private final Random random = new Random();
 
     @Autowired

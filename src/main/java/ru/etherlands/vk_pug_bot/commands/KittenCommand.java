@@ -1,7 +1,8 @@
 package ru.etherlands.vk_pug_bot.commands;
 
-import org.apache.log4j.Logger;
+
 import org.cyberneko.html.parsers.DOMParser;
+import org.slf4j.Logger;
 import org.w3c.dom.Node;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
@@ -15,7 +16,7 @@ import java.util.List;
  * Created by ssosedkin on 10.11.2016.
  */
 public class KittenCommand  extends AbstractCommand{
-    private Logger logger = Logger.getLogger(KittenCommand.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(KittenCommand.class);
     private final String DOMAIN_NAME = "http://random.cat";
 
     @Override

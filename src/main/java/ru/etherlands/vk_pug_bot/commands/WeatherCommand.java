@@ -3,8 +3,9 @@ package ru.etherlands.vk_pug_bot.commands;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.log4j.Logger;
+
 import org.cyberneko.html.parsers.DOMParser;
+import org.slf4j.Logger;
 import org.w3c.dom.Node;
 import ru.etherlands.vk_pug_bot.Utils;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
@@ -16,7 +17,7 @@ import java.util.*;
  * Created by ssosedkin on 10.11.2016.
  */
 public class WeatherCommand extends AbstractCommand {
-    private Logger logger = Logger.getLogger(WeatherCommand.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(WeatherCommand.class);
 
     private final String DOMAIN_NAME = "http://meteoinfo.ru/rss/forecasts/";
     private final String DEFAULT_CITY_ID = "28722";

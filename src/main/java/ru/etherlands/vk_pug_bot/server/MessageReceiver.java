@@ -6,7 +6,7 @@ import com.vk.api.sdk.objects.base.responses.OkResponse;
 import com.vk.api.sdk.objects.messages.Message;
 import com.vk.api.sdk.objects.messages.responses.GetResponse;
 import com.vk.api.sdk.queries.messages.MessagesGetQuery;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +26,7 @@ import java.util.Properties;
  */
 @Component
 public class MessageReceiver {
-    private Logger logger = Logger.getLogger(QueueConfiguration.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(MessageReceiver.class);
     private Integer lastMessageId = 0;
     private Integer maxMessages = Integer.parseInt(Utils.readProperties().getProperty("maxMessages"));
 

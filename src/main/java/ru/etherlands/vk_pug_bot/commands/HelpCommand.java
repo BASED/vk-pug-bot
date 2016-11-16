@@ -1,7 +1,8 @@
 package ru.etherlands.vk_pug_bot.commands;
 
 import com.google.common.base.Strings;
-import org.apache.log4j.Logger;
+;
+import org.slf4j.Logger;
 import ru.etherlands.vk_pug_bot.dto.PugMessage;
 import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 
@@ -14,7 +15,7 @@ import java.util.Random;
  * Created by ssosedkin on 10.11.2016.
  */
 public class HelpCommand extends AbstractCommand {
-    private Logger logger = Logger.getLogger(HelpCommand.class);
+    private Logger logger = org.slf4j.LoggerFactory.getLogger(HelpCommand.class);
 
     @Override
     public List<String> getCommandWords() {

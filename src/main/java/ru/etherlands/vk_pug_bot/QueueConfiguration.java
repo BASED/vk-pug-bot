@@ -1,6 +1,6 @@
 package ru.etherlands.vk_pug_bot;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 public class QueueConfiguration {
-    Logger logger = Logger.getLogger(QueueConfiguration.class);
+    Logger logger = org.slf4j.LoggerFactory.getLogger(QueueConfiguration.class);
 
     @Bean
     public ConnectionFactory connectionFactory() {
