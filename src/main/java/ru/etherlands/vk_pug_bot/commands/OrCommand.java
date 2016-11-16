@@ -30,7 +30,7 @@ public class OrCommand extends AbstractCommand {
 
     @Override
     public List<String> getCommandWords() {
-        return Arrays.asList(new String[]{"or", "dice", "выбери"});
+        return Arrays.asList(new String[]{"or", "dice", "random", "выбери", "ор", "рандом"});
     }
 
     @Override
@@ -55,7 +55,10 @@ public class OrCommand extends AbstractCommand {
 
         List<String> filteredVariants = new ArrayList<>();
 
+
+        String inQuotesText = "";
         boolean first = true;
+        boolean inQuotes = false;
         for (String variant : variants) {
             if (first) {
                 first = false;
@@ -63,8 +66,40 @@ public class OrCommand extends AbstractCommand {
             }
             if (!Strings.isNullOrEmpty(variant)) {
                 variant = variant.trim();
-                if (!"или".equalsIgnoreCase(variant)) {
+
+                if (!inQuotes && (variant.startsWith("\"") || variant.startsWith("\'"))) {
+                    if (variant.endsWith("\"") || variant.endsWith("\'")) {
+                        if (variant.length() > 1) {
+                            filteredVariants.add(variant.substring(1, variant.length() - 1).trim());
+                        } else {
+                            inQuotes = true;
+                        }
+                    } else {
+                        inQuotes = true;
+                        inQuotesText += variant.substring(1, variant.length());
+                    }
+                    continue;
+                };
+
+                if (!inQuotes && !"или".equalsIgnoreCase(variant)) {
                     filteredVariants.add(variant);
+                }
+
+                if (inQuotes && (variant.endsWith("\"") || variant.endsWith("\'"))) {
+                    inQuotesText += " ";
+                    if (variant.length() > 1) {
+                        inQuotesText += variant.substring(0, variant.length() - 1);
+                    }
+                    inQuotes = false;
+                    if (!inQuotesText.trim().isEmpty()) {
+                        filteredVariants.add(inQuotesText.trim());
+                    }
+                    inQuotesText = "";
+                }
+
+                if (inQuotes) {
+                    inQuotesText += " ";
+                    inQuotesText += variant;
                 }
             }
         }
