@@ -2,6 +2,10 @@ package ru.etherlands.vk_pug_bot.commands;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.vk.api.sdk.client.Lang;
+import com.vk.api.sdk.objects.users.UserXtrCounters;
+import com.vk.api.sdk.queries.users.UserField;
+import com.vk.api.sdk.queries.users.UsersGetQuery;
 import org.apache.commons.collections4.ListUtils;
 
 import org.cyberneko.html.parsers.DOMParser;
@@ -23,6 +27,7 @@ public class WeatherCommand extends AbstractCommand {
     private final String DEFAULT_CITY_ID = "28722";
     private final HashMap<String, String> cityIds = new HashMap<String, String>() {{
         put("Санкт-Петербург", "26063");
+        put("Уфа", "28722");
     }};
 
     @Override
@@ -36,26 +41,33 @@ public class WeatherCommand extends AbstractCommand {
     }
 
     @Override
-    public List<PugMessage> executeCommand(PugMessage message, ServiceProvider serviceProvider) {
+    public List<PugMessage> executeCommand(PugMessage incomingMessage, ServiceProvider serviceProvider) {
         List<PugMessage> messages = new ArrayList<PugMessage>();
-        PugMessage outcoming = new PugMessage(null);
-        processMessage(outcoming, serviceProvider);
+        PugMessage outgoingMessage = new PugMessage(null);
+        processMessage(outgoingMessage, incomingMessage, serviceProvider);
 
-        messages.add(outcoming);
+        messages.add(outgoingMessage);
         return messages;
     }
 
-    public void processMessage(PugMessage message, ServiceProvider serviceProvider) {
+    public void processMessage(PugMessage outgoingMessage, PugMessage incomiingMessage, ServiceProvider serviceProvider) {
         List<String> weatherData = null;
         try {
             DOMParser parser = new DOMParser();
            // parser.setProperty("http://cyberneko.org/html/properties/default-encoding", "utf-8");
             String cityId = DEFAULT_CITY_ID;
             try {
-                String senderCityName = serviceProvider.getApiClient().users().get().userIds(String.valueOf(message.getUserId())).execute().get(0).getCity().getTitle();
+                String userId = String.valueOf(incomiingMessage.getUserId());
+                logger.info("Sender userId: " + userId);
+
+                UsersGetQuery uq = serviceProvider.getApiClient().users().get();
+                List<UserXtrCounters> userData = uq.userIds(userId).fields(UserField.CITY).lang(Lang.RU).execute();
+                logger.debug("userData: " + userData);
+                String senderCityName = userData.get(0).getCity().getTitle();
                 logger.info("Sender city name: " + senderCityName);
                 if (cityIds.containsKey(senderCityName)) {
                     cityId = cityIds.get(senderCityName);
+                    logger.info("Sender city id : " + cityId);
                 }
             } catch (Exception ex) {
                 logger.error(ex.getMessage(), ex);
@@ -67,9 +79,9 @@ public class WeatherCommand extends AbstractCommand {
             logger.error(ex.getMessage(), ex);
         }
         if (weatherData != null && !weatherData.isEmpty() && !Strings.isNullOrEmpty(weatherData.get(0))) {
-            message.setBody(Joiner.on("\n").join(weatherData));
+            outgoingMessage.setBody(Joiner.on("\n").join(weatherData));
         } else {
-            message.setBody("Погода не получена! :(");
+            outgoingMessage.setBody("Погода не получена! :(");
         }
     }
 
