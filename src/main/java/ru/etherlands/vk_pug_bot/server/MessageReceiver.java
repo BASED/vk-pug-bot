@@ -61,14 +61,14 @@ public class MessageReceiver {
             List<Integer> readedMessageIds = new ArrayList<Integer>();
 
             GetResponse response = query.execute();
-            for (Message msg : response.getItems()) {
+            for (Message msg : Lists.reverse(response.getItems())) {
+
+                PugMessage pugMessage = Utils.getPugMessageFromMessage(msg);
+                logger.info("Message: " + pugMessage);
 
                 if (msg.getId() > lastMessageId) {
                     lastMessageId = msg.getId();
                 }
-
-                PugMessage pugMessage = Utils.getPugMessageFromMessage(msg);
-                logger.info("Message: " + pugMessage);
 
                 if (!msg.isReadState()) {
                     readedMessageIds.add(msg.getId());
@@ -80,7 +80,6 @@ public class MessageReceiver {
                 logger.info("set readed result: " + okay.getValue());
             }
 
-            receivedMessages = Lists.reverse(receivedMessages);
             for (PugMessage message : receivedMessages) {
                 logger.info("Message to queue: " + message);
                 template.convertAndSend(message);
