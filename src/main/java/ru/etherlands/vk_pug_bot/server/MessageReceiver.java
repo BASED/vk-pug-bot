@@ -63,7 +63,7 @@ public class MessageReceiver {
             GetResponse response = query.execute();
             Message lastProcessedMessage = null;
             for (Message msg : Lists.reverse(response.getItems())) {
-                logger.info("RAW Message: " + msg);
+                logger.debug("RAW Message: " + msg);
                 PugMessage pugMessage = Utils.getPugMessageFromMessage(msg);
                 logger.info("Message: " + pugMessage);
 
