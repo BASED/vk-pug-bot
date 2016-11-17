@@ -11,17 +11,19 @@ import ru.etherlands.vk_pug_bot.server.ServiceProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by ssosedkin on 10.11.2016.
  */
-public class KittenCommand  extends AbstractCommand{
+public class KittenCommand extends AbstractCommand {
     private Logger logger = org.slf4j.LoggerFactory.getLogger(KittenCommand.class);
     private final String DOMAIN_NAME = "http://random.cat";
+    private ReentrantLock lock = new ReentrantLock();
 
     @Override
     public List<String> getCommandWords() {
-        return Arrays.asList(new String[] {"cat", "kitten", "котик", "котики", "котэ", "кошак"});
+        return Arrays.asList(new String[]{"cat", "kitten", "котик", "котики", "котэ", "кошак"});
     }
 
     @Override
@@ -37,16 +39,21 @@ public class KittenCommand  extends AbstractCommand{
 
         messages.add(outcoming);
         return messages;
-    };
+    }
+
+    ;
 
     public void processMessage(PugMessage message) {
         String fileName = null;
         try {
+            lock.lock();
             DOMParser parser = new DOMParser();
             parser.parse(DOMAIN_NAME);
             fileName = getCatFile(parser.getDocument(), DOMAIN_NAME);
         } catch (Exception ex) {
             logger.error(ex.getMessage(), ex);
+        } finally {
+            lock.unlock();
         }
         if (fileName != null && !fileName.isEmpty()) {
             message.getImageFileNames().add(fileName);
@@ -58,15 +65,16 @@ public class KittenCommand  extends AbstractCommand{
     public String getCatFile(Node node, String domain) {
         try {
             if ("img".equalsIgnoreCase(node.getNodeName()) && node.getAttributes() != null) {
-                logger.info(node.getClass().getName() + " : " + node.getNodeName());
                 if (node.hasAttributes()) {
-                    logger.info(node.getAttributes().getNamedItem("id").getNodeValue());
-                    if ("cat".equalsIgnoreCase(node.getAttributes().getNamedItem("id").getNodeValue())) {
-                        String url = domain + "/" + node.getAttributes().getNamedItem("src").getNodeValue();
-                        logger.info("Cat url : " + url);
-                        String filePath = Utils.saveURLToFile(url);
-                        logger.info("Cat file : " + filePath);
-                        return filePath;
+                    try {
+                        if ("cat".equalsIgnoreCase(node.getAttributes().getNamedItem("id").getNodeValue())) {
+                            String url = domain + "/" + node.getAttributes().getNamedItem("src").getNodeValue();
+                            logger.info("Cat url : " + url);
+                            String filePath = Utils.saveURLToFile(url);
+                            logger.info("Cat file : " + filePath);
+                            return filePath;
+                        }
+                    } catch (NullPointerException ex) {
                     }
                 }
             }

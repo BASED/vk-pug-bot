@@ -82,6 +82,7 @@ public class MessageReceiver {
 
             receivedMessages = Lists.reverse(receivedMessages);
             for (PugMessage message : receivedMessages) {
+                logger.info("Message to queue: " + message);
                 template.convertAndSend(message);
             }
         } catch (Exception e) {

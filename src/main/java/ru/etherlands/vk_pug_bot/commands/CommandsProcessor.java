@@ -24,7 +24,7 @@ public class CommandsProcessor {
         if (messageBody.startsWith(Constants.COMMAND_PREFIX)) {
             String[] messageWords = messageBody.split(" ");
             String commandWord = messageWords[0].replace(Constants.COMMAND_PREFIX, "").toLowerCase();
-            logger.info("CommandWord: " + commandWord);
+            logger.info("Message Id: {} CommandWord: {} ", incomingMessage.getId(), commandWord);
             for(AbstractCommand command : commands) {
                 if (command.getCommandWords().contains(commandWord)) {
                     logger.info("Found command processor: " + command.getClass().getSimpleName());
@@ -43,7 +43,7 @@ public class CommandsProcessor {
         commands.add(new DogCommand());
         commands.add(new WeatherCommand());
         commands.add(new OrCommand());
-        commands.add(new TitsCommand());
+        //commands.add(new TitsCommand());
         return commands;
     };
 
