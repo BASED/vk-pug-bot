@@ -32,6 +32,11 @@ public class TitsCommand extends AbstractCommand{
 
     @Override
     public List<PugMessage> executeCommand(PugMessage message, ServiceProvider serviceProvider) {
+        if (message.getChatId() == null)
+            return null;
+        if (message.getChatId() != 1 && message.getChatId() != 2)
+            return null;
+
         List<PugMessage> messages = new ArrayList<PugMessage>();
         PugMessage outgoing = new PugMessage(null);
         processMessage(outgoing);
