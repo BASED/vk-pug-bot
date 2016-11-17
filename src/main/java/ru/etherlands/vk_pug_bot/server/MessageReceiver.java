@@ -61,21 +61,29 @@ public class MessageReceiver {
             List<Integer> readedMessageIds = new ArrayList<Integer>();
 
             GetResponse response = query.execute();
+            Message lastProcessedMessage = null;
             for (Message msg : Lists.reverse(response.getItems())) {
-
+                logger.info("RAW Message: " + msg);
                 PugMessage pugMessage = Utils.getPugMessageFromMessage(msg);
                 logger.info("Message: " + pugMessage);
 
-                if (msg.getId() > lastMessageId) {
-                    lastMessageId = msg.getId();
+                if ((msg.getId() > lastMessageId) && (lastMessageId > 0)) {
+                    receivedMessages.add(pugMessage);
                 }
 
                 if (!msg.isReadState()) {
                     readedMessageIds.add(msg.getId());
-                    receivedMessages.add(pugMessage);
+
                 }
+                lastProcessedMessage = msg;
             }
+
+            if (lastProcessedMessage != null) {
+                lastMessageId = lastProcessedMessage.getId();
+            }
+
             if (!readedMessageIds.isEmpty()) {
+                logger.info("set readed: " + readedMessageIds);
                 OkResponse okay = apiClient.messages().markAsRead(userActor).messageIds(readedMessageIds).execute();
                 logger.info("set readed result: " + okay.getValue());
             }
